@@ -1,5 +1,6 @@
 # Vk Bot I/O [![PyPI](https://img.shields.io/pypi/v/vbio.svg)](https://pypi.org/project/vbio/)
 **vbio** - Python модуль для написания скриптов, использующих Callback API для социальной сети Вконтакте (vk.com)
+* [Документация](https://vbio.readthedocs.io/en/latest/)
 
 ## Hello world
 ```python
