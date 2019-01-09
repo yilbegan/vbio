@@ -1,20 +1,14 @@
 # -*- coding: utf-8 -*-
 
-# Можно использовать другие обертки для API,
-# например vk_api.
 import vk_requests
 
 from vbio import VkBot
 from vbio.servers import FlaskServer
 
-# Получаем обертку на API
 api = vk_requests.create_api(service_token='<токен группы>')
-
 bot = VkBot(secret='<секретный ключ>',
             confirmation='<строка, которую должен вернуть сервер>',
             api=api)
-
-# Сервер, который будет обрабатывать запросы
 server = FlaskServer(bot, port=80)
 
 
