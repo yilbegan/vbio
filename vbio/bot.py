@@ -43,10 +43,11 @@ class VkBot:
             'regexp': lambda m: re.fullmatch(value, msg.text),
             'func': lambda m: value(m),
             'text': lambda m: m.get('body') == value,
-            'payload': lambda m: m.get('payload') == value,
             'content_type': lambda m: set(value).issubset({
                 ct for ct in CONTENT_TYPES if CONTENT_TYPES[ct](m)
-            })
+            }),
+            'payload': lambda m: m.payload == value,
+            'command': lambda m: m.command == value
         }
 
         return test_cases.get(f, lambda m: False)(msg)
@@ -88,10 +89,11 @@ class VkBot:
         self.callback_request_handlers.append(handler_dict)
 
     def callback_message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
-                                 text: str = None, payload: str = None):
+                                 text: str = None, command: str = None, payload: dict = None):
         def decorator(handler):
             handler_dict = self._build_handler_dict(handler, regexp=regexp, content_type=content_type,
-                                                    func=func, text=text, payload=payload)
+                                                    func=func, text=text, command=command,
+                                                    payload=payload)
             self.add_callback_message_handler(handler_dict)
 
         return decorator

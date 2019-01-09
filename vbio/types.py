@@ -3,6 +3,7 @@
 import requests
 import json
 
+from enum import Enum
 from copy import deepcopy
 from typing import IO
 
@@ -104,11 +105,21 @@ class VkKeyboardMarkup(Dictionaryable, JsonSerializable):
         return self.json()
 
 
+class VkColor(Enum):
+    DEFAULT = 'default'
+    PRIMARY = 'primary'
+    NEGATIVE = 'negative'
+    POSITIVE = 'positive'
+
+
 class VkKeyboardButton(Dictionaryable):
 
-    def __init__(self, label: str, color: str = 'default', payload: dict = None):
+    def __init__(self, label: str, color: str or VkColor = 'default', payload: dict = None):
         if payload is None:
             payload = {'command': 'test'}
+
+        if isinstance(color, VkColor):
+            color = color.value
 
         self.label = label
         self.color = color
