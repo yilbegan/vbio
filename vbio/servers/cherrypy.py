@@ -66,7 +66,7 @@ class CherryPyServer(VkBotServer):
                                     data
                                 )
                             )
-                        
+                            
                         if not self.bot.ignore_errors:
                             raise e
 
