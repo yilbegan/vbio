@@ -14,18 +14,18 @@ CONTENT_TYPES = {
     'geo': lambda m: 'geo' in m,
     'fwd_messages': lambda m: 'fwd_messages' in m,
     'emoji': lambda m: 'emoji' in m,
-    'photo': lambda m: 'photo' in {a['type'] for a in m.get('attachments', [])},
-    'video': lambda m: 'video' in {a['type'] for a in m.get('attachments', [])},
-    'audio': lambda m: 'audio' in {a['type'] for a in m.get('attachments', [])},
-    'doc': lambda m: 'doc' in {a['type'] for a in m.get('attachments', [])},
-    'link': lambda m: 'link' in {a['type'] for a in m.get('attachments', [])},
-    'market': lambda m: 'market' in {a['type'] for a in m.get('attachments', [])},
-    'market_album': lambda m: 'market_album' in {a['type'] for a in m.get('attachments', [])},
-    'wall': lambda m: 'wall' in {a['type'] for a in m.get('attachments', [])},
-    'wall_reply': lambda m: 'doc' in {a['type'] for a in m.get('attachments', [])},
-    'sticker': lambda m: 'sticker' in {a['type'] for a in m.get('attachments', [])},
-    'gift': lambda m: 'gift' in {a['type'] for a in m.get('attachments', [])},
-    'graffiti': lambda m: 4 in {a['doc']['type'] for a in m.get('attachments', []) if a['type'] == 'doc'}
+    'photo': lambda m: 'photo' in {a.type for a in m.get('attachments', [])},
+    'video': lambda m: 'video' in {a.type for a in m.get('attachments', [])},
+    'audio': lambda m: 'audio' in {a.type for a in m.get('attachments', [])},
+    'doc': lambda m: 'doc' in {a.type for a in m.get('attachments', [])},
+    'link': lambda m: 'link' in {a.type for a in m.get('attachments', [])},
+    'market': lambda m: 'market' in {a.type for a in m.get('attachments', [])},
+    'market_album': lambda m: 'market_album' in {a.type for a in m.get('attachments', [])},
+    'wall': lambda m: 'wall' in {a.type for a in m.get('attachments', [])},
+    'wall_reply': lambda m: 'doc' in {a.type for a in m.get('attachments', [])},
+    'sticker': lambda m: 'sticker' in {a.type for a in m.get('attachments', [])},
+    'gift': lambda m: 'gift' in {a.type for a in m.get('attachments', [])},
+    'graffiti': lambda m: 4 in {a['type'] for a in m.get('attachments', []) if a.type == 'doc'}
 }
 
 
