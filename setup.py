@@ -14,8 +14,13 @@ setuptools.setup(
                 u'Callback API для социальной сети '
                 u'Вконтакте (vk.com)',
 
+    url='https://github.com/yilbegan/vbio',
+
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type='text/markdown',
-    
-    packages=['vbio', 'vbio.servers']
+
+    packages=['vbio', 'vbio.servers'],
+    install_requirements=['Flask',
+                          'CherryPy',
+                          'requests']
 )
