@@ -3,7 +3,6 @@
 import requests
 import json
 
-from . import VkBot
 from copy import deepcopy
 from typing import IO
 
@@ -171,7 +170,7 @@ class VkBotRoom:
 
 class VkMessage:
 
-    def __init__(self, message: dict, bot: VkBot):
+    def __init__(self, message: dict, bot):
         self.data = message
         self.data['payload'] = json.loads(self.data.get('payload', '{}'))
         if 'attachments' in self.data:
@@ -293,4 +292,3 @@ class VkCallbackRequest:
     def __iter__(self):
         for key in self.data:
             yield key
-
