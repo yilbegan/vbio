@@ -246,10 +246,10 @@ class VkAttachment:
 
     @property
     def to_attachment(self) -> str:
-        return f'{self.type}{self[self.type]["owner_id"]}_{self[self.type]["id"]}' + \
-               (f'_{self[self.type].get("access_key")}'
-                if self[self.type].get('access_key') is not None
-                else '')
+        return '{}{}_{}_{}'.format(self.type,
+                                   self[self.type]['owner_id'],
+                                   self[self.type]['id'],
+                                   self[self.type].get('access_key', ''))
 
     def download(self, out: IO = None) -> bytes or None:
         if self.type not in DOWNLOADABLE:
