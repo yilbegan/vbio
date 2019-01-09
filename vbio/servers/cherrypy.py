@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
+import cherrypy
+import traceback
+
 from vbio.bot import VkBot
 from vbio.types import VkBotServer
-
-import cherrypy
+from datetime import datetime
 
 __all__ = ('CherryPyServer',)
 
@@ -38,6 +40,16 @@ class CherryPyServer(VkBotServer):
                     try:
                         self.bot.process_message(data['object'])
                     except Exception as e:
+                        if self.bot.logger is not None:
+                            self.bot.logger.error(
+                                '[X] {} Error \n{}\ncaused during handling request: '
+                                '\n{}\n-------------'.format(
+                                    datetime.now().strftime("%d/%m/%y %H:%M:%S"),
+                                    traceback.format_exc(),
+                                    data
+                                )
+                            )
+
                         if not self.bot.ignore_errors:
                             raise e
 
@@ -45,6 +57,16 @@ class CherryPyServer(VkBotServer):
                     try:
                         self.bot.process_request(data)
                     except Exception as e:
+                        if self.bot.logger is not None:
+                            self.bot.logger.error(
+                                '[X] {} Error \n{}\ncaused during handling request: '
+                                '\n{}\n-------------'.format(
+                                    datetime.now().strftime("%d/%m/%y %H:%M:%S"),
+                                    traceback.format_exc(),
+                                    data
+                                )
+                            )
+                        
                         if not self.bot.ignore_errors:
                             raise e
 

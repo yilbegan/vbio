@@ -1,11 +1,11 @@
 # -*- encoding: utf-8 -*-
 
+import traceback
+
 from flask import Flask, request, abort
 from vbio.bot import VkBot
 from vbio.types import VkBotServer
 from datetime import datetime
-
-import traceback
 
 __all__ = ('FlaskServer',)
 
@@ -39,6 +39,16 @@ class FlaskServer(VkBotServer):
                     self.bot.process_message(data['object'])
 
                 except Exception as e:
+                    if self.bot.logger is not None:
+                        self.bot.logger.error(
+                            '[X] {} Error \n{}\ncaused during handling request: '
+                            '\n{}\n-------------'.format(
+                                datetime.now().strftime("%d/%m/%y %H:%M:%S"),
+                                traceback.format_exc(),
+                                data
+                            )
+                        )
+
                     if not self.bot.ignore_errors:
                         raise e
 
@@ -49,9 +59,14 @@ class FlaskServer(VkBotServer):
                 except Exception as e:
                     if self.bot.logger is not None:
                         self.bot.logger.error(
-                            f'[X] {datetime.now().strftime("%d/%m/%y %H:%M:%S")} Error \n{traceback.format_exc()}\n'
-                            f'caused during handling request: \n{data}\n-------------'
+                            '[X] {} Error \n{}\ncaused during handling request: '
+                            '\n{}\n-------------'.format(
+                                datetime.now().strftime("%d/%m/%y %H:%M:%S"),
+                                traceback.format_exc(),
+                                data
+                            )
                         )
+
                     if not self.bot.ignore_errors:
                         raise e
 
