@@ -4,8 +4,8 @@
 * [Примеры использования](./examples) (python3)
 ## Hello world
 ```python
-import vk_requests  # Можно использовать другие обертки для API,
-		            # например vk_api.
+import vk_requests
+
 from vbio import VkBot
 from vbio.servers import FlaskServer
 
