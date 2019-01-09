@@ -10,7 +10,7 @@ from typing import IO
 COLORS = frozenset(('default', 'primary', 'negative', 'positive'))
 DOWNLOADABLE = frozenset(('photo', 'doc', 'audio'))
 CONTENT_TYPES = {
-    'text': lambda m: 'body' in m,
+    'text': lambda m: 'text' in m,
     'geo': lambda m: 'geo' in m,
     'fwd_messages': lambda m: 'fwd_messages' in m,
     'emoji': lambda m: 'emoji' in m,
