@@ -15,6 +15,7 @@ setuptools.setup(
                 u'Вконтакте (vk.com)',
 
     url='https://github.com/yilbegan/vbio',
+    license='MIT',
 
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type='text/markdown',
