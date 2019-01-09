@@ -21,7 +21,7 @@ setuptools.setup(
     long_description_content_type='text/markdown',
 
     packages=['vbio', 'vbio.servers'],
-    install_requirements=['Flask',
-                          'CherryPy',
-                          'requests']
+    install_requires=['Flask',
+                      'CherryPy',
+                      'requests']
 )
