@@ -135,8 +135,8 @@ class VkKeyboardButton(Dictionaryable):
 class VkBotRoom:
 
     def __init__(self, bot):
-        self.users: list = []
-        self.data: dict = {}
+        self.users = []
+        self.data = {}
         self.bot = bot
 
     def init(self, message: dict) -> bool or None:
