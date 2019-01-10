@@ -78,7 +78,7 @@ class VkKeyboardMarkup(Dictionaryable, JsonSerializable):
 
     def stack(self, *args):
         for button in args:
-            self._stack.append(button())
+            self._stack.append(button)
             if len(self._stack) >= self.stack_size:
                 stack = self._stack
                 self._stack = []
