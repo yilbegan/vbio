@@ -41,7 +41,7 @@ class VkBot:
         test_cases = {
             'regexp': lambda m: re.fullmatch(value, msg.text),
             'func': lambda m: value(m),
-            'text': lambda m: m.get('body') == value,
+            'text': lambda m: m.text == value,
             'content_type': lambda m: set(value).issubset({
                 ct for ct in CONTENT_TYPES if CONTENT_TYPES[ct](m)
             }),
