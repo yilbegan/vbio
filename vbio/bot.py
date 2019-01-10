@@ -11,9 +11,8 @@ __all__ = ('VkBot',)
 
 class VkBot:
 
-    def __init__(self, secret: str, confirmation: str,
-                 api, ignore_errors: bool = True,
-                 logger: logging.Logger = None):
+    def __init__(self, api, secret: str = None, confirmation: str = None,
+                 ignore_errors: bool = True, logger: logging.Logger = None):
 
         self.secret = secret
         self.confirmation = confirmation
