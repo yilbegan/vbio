@@ -21,25 +21,26 @@ Hello world!
 
 .. code-block:: python
 
-   import vk_requests  # Можно использовать другие обертки для API,
-		       # например vk_api.
+   # Можно использовать другие обертки для API.
+   # Например vk_api.
+   import vk_requests
+
    from vbio import VkBot
-   from vbio.servers import FlaskServer
+   from vbio.servers import LongPoolClient
 
    api = vk_requests.create_api(service_token='<токен группы>')
-   bot = VkBot(secret='<секретный ключ>', 
-               confirmation='<строка, которую должен вернуть сервер>',
-               api=api)
-   server = FlaskServer(bot, port=80)
+   bot = VkBot(api)
+   server = LongPoolClient(bot)
 
 
    @bot.callback_message_handler()
    def hello_world(m):
-      m.answer(message='Привет мир!')
+       m.answer(message='Привет мир!')
 
 
    if __name__ == '__main__':
        server.run()
+
 
 .. toctree::
    :maxdepth: 2

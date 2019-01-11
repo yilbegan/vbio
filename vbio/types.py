@@ -40,7 +40,7 @@ class JsonSerializable:
 
 
 class VkBotServer:
-    def run(self):
+    def run(self, *args, **kwargs):
         raise NotImplementedError()
 
 
@@ -141,42 +141,6 @@ class VkKeyboardButton(Dictionaryable):
 
     def __call__(self) -> dict:
         return self.dict()
-
-
-class VkBotRoom:
-
-    def __init__(self, bot):
-        self.users = []
-        self.data = {}
-        self.bot = bot
-
-    def init(self, message: dict) -> bool or None:
-        self.users.append(message['from_id'])
-        return self._init(message)
-
-    def enter(self, message: dict) -> bool or None:
-        self.users.append(message['from_id'])
-        return self._enter(message)
-
-    def exit(self, message: dict) -> bool or None:
-        self.users.remove(message['from_id'])
-        return self._exit(message)
-
-    def _init(self, message: dict) -> bool or None:
-        raise NotImplementedError()
-
-    def _enter(self, message: dict) -> bool or None:
-        raise NotImplementedError()
-
-    def _exit(self, message: dict) -> bool or None:
-        raise NotImplementedError()
-
-    def broadcast(self, **kwargs):
-        for user in self.users:
-            self.bot.api.messages.send(peer_id=user, **kwargs)
-
-    def is_member(self, user: int):
-        return user in self.users
 
 
 class VkMessage:
@@ -287,6 +251,7 @@ class VkCallbackRequest:
     def __init__(self, data: dict):
         self.type = data['type']
         self.data = data['object']
+        self.group_id = data['group_id']
 
     def __getattr__(self, item):
         return self.data[item]

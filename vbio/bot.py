@@ -4,6 +4,7 @@ import logging
 import re
 
 from vbio.types import CONTENT_TYPES, VkMessage, VkCallbackRequest
+from vbio.logging import init_logger
 from typing import Callable
 
 __all__ = ('VkBot',)
@@ -11,11 +12,7 @@ __all__ = ('VkBot',)
 
 class VkBot:
 
-    def __init__(self, api, secret: str = None, confirmation: str = None,
-                 ignore_errors: bool = True, logger: logging.Logger = None):
-
-        self.secret = secret
-        self.confirmation = confirmation
+    def __init__(self, api, ignore_errors: bool = True):
         self.ignore_errors = ignore_errors
         self.api = api
 
@@ -24,7 +21,7 @@ class VkBot:
 
         self.message_register_next_step = {}
 
-        self.logger = logger
+        self.logger = init_logger()
 
     @staticmethod
     def _build_handler_dict(f: Callable, **filters) -> dict:

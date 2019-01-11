@@ -3,13 +3,11 @@
 import vk_requests
 
 from vbio import VkBot
-from vbio.servers import FlaskServer
+from vbio.servers import LongPoolClient
 
 api = vk_requests.create_api(service_token='<токен группы>')
-bot = VkBot(secret='<секретный ключ>',
-            confirmation='<строка, которую должен вернуть сервер>',
-            api=api)
-server = FlaskServer(bot, port=80)
+bot = VkBot(api=api)
+server = LongPoolClient(bot)
 
 
 @bot.callback_message_handler()

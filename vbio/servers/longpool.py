@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 
 import requests
-import traceback
+import sys
 
 from vbio.bot import VkBot
 from vbio.types import VkBotServer
-from datetime import datetime
 
 __all__ = ('LongPoolClient',)
 
@@ -30,6 +29,8 @@ class LongPoolClient(VkBotServer):
             'ts': pool['ts'],
         }
 
+        self.bot.logger.info('Pooling started!')
+
         while True:
             event = self.session.get(
                 url=url,
@@ -43,19 +44,14 @@ class LongPoolClient(VkBotServer):
                 try:
                     if update['type'] == 'message_new':
                         self.bot.process_message(update['object'])
+                        self.bot.logger.info('Processed message from {}: {}'.format(update['object'].get('from_id'),
+                                                                                    update['object'].get('text')))
 
                     else:
                         self.bot.process_request(update['object'])
-                except Exception as e:
-                    if self.bot.logger is not None:
-                        self.bot.logger.error(
-                            '[X] {} Error \n{}\ncaused during handling event: '
-                            '\n{}\n-------------'.format(
-                                datetime.now().strftime("%d/%m/%y %H:%M:%S"),
-                                traceback.format_exc(),
-                                update
-                            )
-                        )
+                        self.bot.logger.info('Processed request: {}'.format(update['type']))
 
+                except Exception as e:
+                    self.bot.logger.error('From {}'.format(update['type']), exc_info=sys.exc_info())
                     if not self.bot.ignore_errors:
                         raise e

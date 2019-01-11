@@ -23,10 +23,9 @@ setuptools.setup(
     packages=['vbio', 'vbio.servers'],
     install_requires=['requests'],
     extras_require={
-        'flask_webhook': ['flask'],
-        'cherrypy_webhook': ['cherrypy'],
+        'webhook': ['Flask'],
+        'color': ['colorama']
     },
-
 
     classifiers=[
         'License :: OSI Approved :: Apache Software License',

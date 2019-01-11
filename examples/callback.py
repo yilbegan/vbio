@@ -3,13 +3,12 @@
 import vk_requests
 
 from vbio import VkBot
-from vbio.servers import LongPoolClient
+from vbio.servers import FlaskServer
 
-# Токен должен иметь доступ к управлению группой!
 api = vk_requests.create_api(service_token='<токен группы>')
-
 bot = VkBot(api=api)
-long_pool = LongPoolClient(bot)
+server = FlaskServer(bot, secret='<секретный ключ>',
+                     confirmation='<строка, которую должен вернуть сервер>')
 
 
 @bot.callback_message_handler()
@@ -18,4 +17,4 @@ def hello_world(m):
 
 
 if __name__ == '__main__':
-    long_pool.run()
+    server.run(port=80)

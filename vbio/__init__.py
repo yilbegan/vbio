@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+from vbio.logging import *
 from vbio.bot import *
 from vbio.types import *
 from vbio.servers import *

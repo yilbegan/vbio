@@ -1,75 +1,61 @@
 # -*- encoding: utf-8 -*-
 
-import traceback
+import sys
+import logging
 
 from flask import Flask, request, abort
 from vbio.bot import VkBot
 from vbio.types import VkBotServer
-from datetime import datetime
 
 __all__ = ('FlaskServer',)
 
 
 class FlaskServer(VkBotServer):
 
-    def __init__(self, bot: VkBot, host: str = '0.0.0.0', port: int = 5000):
+    def __init__(self, bot: VkBot, secret: str, confirmation: str, app: Flask = None):
+
         self.bot = bot
-        self.host = host
-        self.port = port
-        self.app = None
+        self.secret = secret
+        self.confirmation = confirmation
 
-    def run(self):
-        self.app = Flask(__name__)
+        self.app = app or Flask(__name__)
 
-        @self.app.route('/', methods=['POST'])
-        def message_handler():
-            data = request.json
+    def message_handler(self):
+        data = request.json
 
-            if data is None:
-                return abort(400)
+        if data is None:
+            return abort(400)
 
-            if data.get('secret', '') != self.bot.secret:
-                return abort(403)
+        if data.get('secret', '') != self.secret:
+            self.bot.logger.warning('Invalid secret passed!')
+            return abort(403)
 
-            if data.get('type') == 'confirmation':
-                return self.bot.confirmation
+        if data.get('type') == 'confirmation':
+            self.bot.logger.info('Confirmation sent')
+            return self.confirmation
 
-            elif data.get('type') == 'message_new':
-                try:
-                    self.bot.process_message(data['object'])
-
-                except Exception as e:
-                    if self.bot.logger is not None:
-                        self.bot.logger.error(
-                            '[X] {} Error \n{}\ncaused during handling request: '
-                            '\n{}\n-------------'.format(
-                                datetime.now().strftime("%d/%m/%y %H:%M:%S"),
-                                traceback.format_exc(),
-                                data
-                            )
-                        )
-
-                    if not self.bot.ignore_errors:
-                        raise e
+        try:
+            if data.get('type') == 'message_new':
+                self.bot.process_message(data['object'])
+                self.bot.logger.info('Processed message from {}: {}'.format(data['object'].get('from_id'),
+                                                                            data['object'].get('text')[:40]))
 
             else:
-                try:
-                    self.bot.process_request(data)
+                self.bot.process_request(data)
+                self.bot.logger.info('Processed request: {}'.format(data.get('type')))
 
-                except Exception as e:
-                    if self.bot.logger is not None:
-                        self.bot.logger.error(
-                            '[X] {} Error \n{}\ncaused during handling request: '
-                            '\n{}\n-------------'.format(
-                                datetime.now().strftime("%d/%m/%y %H:%M:%S"),
-                                traceback.format_exc(),
-                                data
-                            )
-                        )
+        except Exception as ex:
+            self.bot.logger.error('From {}'.format(data.get('type')), exc_info=sys.exc_info())
+            if not self.bot.ignore_errors:
+                raise ex
 
-                    if not self.bot.ignore_errors:
-                        raise e
+        return 'ok'
 
-            return 'ok'
+    def run(self, path: str = '/', *args, **kwargs):
+        self.app.route(path, methods=['POST'])(
+            self.message_handler
+        )
 
-        self.app.run(self.host, self.port, debug=False)
+        logging.getLogger('werkzeug').setLevel(logging.FATAL)
+        self.bot.logger.info('starting webhook')
+        self.app.run(*args, **kwargs)

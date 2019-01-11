@@ -5,17 +5,15 @@
 import vk_requests
 
 from vbio import VkBot
-from vbio.servers import FlaskServer
+from vbio.servers import LongPoolClient
 
 # Получаем обертку на API
 api = vk_requests.create_api(service_token='<токен группы>')
 
-bot = VkBot(secret='<секретный ключ>',
-            confirmation='<строка, которую должен вернуть сервер>',
-            api=api)
+bot = VkBot(api=api)
 
-# Сервер, который будет обрабатывать запросы
-server = FlaskServer(bot, port=80)
+# LongPool клиент
+server = LongPoolClient(bot)
 
 
 # Задаем функцию которая будет получать сообщения.
