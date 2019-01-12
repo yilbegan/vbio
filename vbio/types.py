@@ -13,7 +13,6 @@ CONTENT_TYPES = {
     'text': lambda m: 'text' in m,
     'geo': lambda m: 'geo' in m,
     'fwd_messages': lambda m: 'fwd_messages' in m,
-    'emoji': lambda m: 'emoji' in m,
     'photo': lambda m: 'photo' in {a.type for a in m.get('attachments', [])},
     'video': lambda m: 'video' in {a.type for a in m.get('attachments', [])},
     'audio': lambda m: 'audio' in {a.type for a in m.get('attachments', [])},
