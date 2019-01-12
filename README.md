@@ -27,9 +27,13 @@ if __name__ == '__main__':
 
 ## Установка
 ```
-pip3 install vbio
+# pip3 install vbio
 ```
-или
+С цветным выводом в консоль:
 ```
-pip3 install --user vbio
+# pip3 install vbio[color]
+```
+С поддержкой webhook:
+```
+# pip3 install vbio[webhook]
 ```
