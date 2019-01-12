@@ -80,7 +80,7 @@ class VkBot:
                     handler['function'](msg)
                     break
 
-    def process_request(self, req: dict):
+    def process_event(self, req: dict):
         """ Обработка других событий
 
         :param req: Объект события
@@ -98,7 +98,7 @@ class VkBot:
             handler['function'](req)
             break
 
-    def add_callback_message_handler(self, handler_dict: dict):
+    def add_message_handler(self, handler_dict: dict):
         """
         :param handler_dict: Словарь обработчика
             handler_dict['filters']: Словарь фильтров
@@ -109,7 +109,7 @@ class VkBot:
         """
         self.callback_message_handlers.append(handler_dict)
 
-    def add_callback_request_handler(self, handler_dict: dict):
+    def add_event_handler(self, handler_dict: dict):
         """
         :param handler_dict: Словарь обработчика
             handler_dict['filters']: Словарь фильтров
@@ -120,8 +120,8 @@ class VkBot:
         """
         self.callback_request_handlers.append(handler_dict)
 
-    def callback_message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
-                                 text: str = None, command: str = None, payload: dict = None):
+    def message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
+                        text: str = None, command: str = None, payload: dict = None):
         """ Подписка Callable на события сообщений
 
         Фильтры:
@@ -191,11 +191,11 @@ class VkBot:
             handler_dict = self._build_handler_dict(handler, regexp=regexp, content_type=content_type,
                                                     func=func, text=text, command=command,
                                                     payload=payload)
-            self.add_callback_message_handler(handler_dict)
+            self.add_message_handler(handler_dict)
 
         return decorator
 
-    def callback_request_handler(self, func: Callable = None):
+    def callback_event_handler(self, func: Callable = None):
         """ Декортатор
 
         :param func: Callable будет вызываться, если переданный Callable
@@ -206,7 +206,7 @@ class VkBot:
         """
         def decorator(handler):
             handler_dict = self._build_handler_dict(handler, func=func)
-            self.add_callback_request_handler(handler_dict)
+            self.add_event_handler(handler_dict)
 
         return decorator
 

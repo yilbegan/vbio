@@ -10,7 +10,7 @@ bot = VkBot(api=api)
 server = LongPoolClient(bot)
 
 
-@bot.callback_message_handler()
+@bot.message_handler()
 def photo(m):
     # Ищем фото
     for attachment in m.attachments:

@@ -11,7 +11,7 @@ bot = VkBot(api=api)
 server = LongPoolClient(bot)
 
 
-@bot.callback_message_handler()
+@bot.message_handler()
 def no_command(m):
     # Разметка клавиатуры
     # stack_size указывает максимальное кол-во кнопок в ряду;

@@ -48,8 +48,8 @@ class LongPoolClient(VkBotServer):
                                                                                     update['object'].get('text')))
 
                     else:
-                        self.bot.process_request(update['object'])
-                        self.bot.logger.info('Processed request: {}'.format(update['type']))
+                        self.bot.process_event(update['object'])
+                        self.bot.logger.info('Processed event: {}'.format(update['type']))
 
                 except Exception as e:
                     self.bot.logger.error('From {}'.format(update['type']), exc_info=sys.exc_info())

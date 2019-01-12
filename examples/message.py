@@ -10,7 +10,7 @@ bot = VkBot(api=api)
 server = LongPoolClient(bot)
 
 
-@bot.callback_message_handler()
+@bot.message_handler()
 def new_message(m):
     # m - объект сообщения
     # https://vk.com/dev/objects/message

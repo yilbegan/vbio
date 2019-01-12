@@ -16,7 +16,7 @@ bot = VkBot(api)
 server = LongPoolClient(bot)
     
     
-@bot.callback_message_handler()
+@bot.message_handler()
 def hello_world(m):
     m.answer(message='Привет мир!')
     

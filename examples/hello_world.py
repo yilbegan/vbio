@@ -18,7 +18,7 @@ server = LongPoolClient(bot)
 
 # Задаем функцию которая будет получать сообщения.
 # Если фильтры не указаны - будет получать все сообщения.
-@bot.callback_message_handler()
+@bot.message_handler()
 def hello_world(m):
     # Отвечаем на сообщение.
     # Аналогично api.messages.send(peer_id=m.from_id, message='Привет мир!')

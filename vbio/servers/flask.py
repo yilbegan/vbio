@@ -41,7 +41,7 @@ class FlaskServer(VkBotServer):
                                                                             data['object'].get('text')[:40]))
 
             else:
-                self.bot.process_request(data)
+                self.bot.process_event(data)
                 self.bot.logger.info('Processed request: {}'.format(data.get('type')))
 
         except Exception as ex:
