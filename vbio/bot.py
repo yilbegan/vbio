@@ -2,7 +2,7 @@
 
 import re
 
-from vbio.types import CONTENT_TYPES, VkMessage, VkCallbackRequest
+from vbio.types import CONTENT_TYPES, VkMessage, VkEvent
 from vbio.logging import init_logger
 from typing import Callable
 
@@ -26,7 +26,6 @@ class VkBot:
 
         self.callback_message_handlers = []
         self.callback_request_handlers = []
-
         self.message_register_next_step = {}
 
         self.logger = init_logger()
@@ -87,7 +86,7 @@ class VkBot:
         :type req: dict
         """
 
-        req = VkCallbackRequest(req)
+        req = VkEvent(req)
         for handler in self.callback_request_handlers:
             if handler['filters']['func'] is None:
                 pass
@@ -195,7 +194,7 @@ class VkBot:
 
         return decorator
 
-    def callback_event_handler(self, func: Callable = None):
+    def callback_event_handler(self, func: Callable[[VkEvent], None] = None):
         """ Декортатор
 
         :param func: Callable будет вызываться, если переданный Callable
@@ -256,5 +255,14 @@ class VkBot:
                 message_ids.append(None)
         return message_ids
 
-    def register_next_step(self, msg, func):
+    def register_next_step(self, msg: VkMessage, func: Callable[[VkMessage], None]):
+        """ Следующее сообщение будет обработано данным Callable
+
+        :param msg: Объект сообщения
+        :param msg: VkMessage
+
+        :param func: Обработчик
+        :type func: Callable[[VkMessage], None]
+
+        """
         self.message_register_next_step[msg['from_id']] = func

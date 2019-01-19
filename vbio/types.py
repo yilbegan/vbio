@@ -245,7 +245,7 @@ class VkAttachment:
         return data
 
 
-class VkCallbackRequest:
+class VkEvent:
 
     def __init__(self, data: dict):
         self.type = data['type']
