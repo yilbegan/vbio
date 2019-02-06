@@ -230,10 +230,7 @@ class VkAttachment:
             raise NotImplementedError()
 
         if self.type == 'photo':
-            url = sorted(
-                self.photo['sizes'],
-                key=lambda x: x["height"]
-            )[-1]['url']
+            url = self.photo['sizes'][-1]['url']
         else:
             url = self[self.type]['url']
 
