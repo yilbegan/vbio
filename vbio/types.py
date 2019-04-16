@@ -8,7 +8,7 @@ from copy import deepcopy
 from typing import IO
 
 COLORS = frozenset(('default', 'primary', 'negative', 'positive'))
-DOWNLOADABLE = frozenset(('photo', 'doc', 'audio'))
+DOWNLOADABLE = frozenset(('photo', 'doc', 'audio', 'graffiti'))
 CONTENT_TYPES = {
     'text': lambda m: 'text' in m,
     'geo': lambda m: 'geo' in m,
