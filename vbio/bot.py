@@ -1,6 +1,7 @@
 # -*- encoding: utf-8 -*-
 
 import re
+import random
 
 from vbio.types import CONTENT_TYPES, VkMessage, VkEvent
 from vbio.logging import init_logger
@@ -218,6 +219,9 @@ class VkBot:
         :param kwargs: Агрументы
         :type kwargs: dict
         """
+        if 'random_id' not in kwargs:
+            kwargs['random_id'] = random.randint(-2147483648, 2147483647)
+
         return self.api.messages.send(peer_id=msg.peer_id, **kwargs)
 
     def get_user(self, msg: VkMessage, **kwargs):
@@ -245,6 +249,9 @@ class VkBot:
 
         :return: Список ID отправленных сообщений
         """
+        if 'random_id' not in kwargs:
+            kwargs['random_id'] = random.randint(-2147483648, 2147483647)
+
         message_ids = []
         for peer in peers:
             try:
