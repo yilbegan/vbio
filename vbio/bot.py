@@ -2,6 +2,7 @@
 
 import re
 import random
+import json
 
 from vbio.types import CONTENT_TYPES, VkMessage, VkEvent
 from vbio.logging import init_logger
@@ -253,13 +254,25 @@ class VkBot:
             kwargs['random_id'] = random.randint(-2147483648, 2147483647)
 
         message_ids = []
-        for peer in peers:
+        for chunk in [peers[i:i + 20] for i in range(0, len(peers), 20)]:
             try:
-                message_ids.append(self.api.messages.send(peer_id=peer, **kwargs))
+                message_ids.extend(
+                    self.api.execute(
+                        code='var i = 0;'
+                             'var peers = {};'
+                             'var message_ids = [];'
+                             'while (i < peers.length) {{'
+                             'message_ids.push(API.messages.send({} + {{"peer_id": peers[i]}}));'
+                             'i = i + 1;'
+                             '}};'
+                             'return message_ids;'.format(chunk, json.dumps(kwargs, ensure_ascii=False))
+                    )
+                )
             except Exception as ex:
                 if not ignore_errors:
                     raise ex
                 message_ids.append(None)
+
         return message_ids
 
     def register_next_step(self, msg: VkMessage, func: Callable[[VkMessage], None]):
