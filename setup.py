@@ -20,7 +20,7 @@ setuptools.setup(
     long_description=open('README.md', encoding='utf-8').read(),
     long_description_content_type='text/markdown',
 
-    packages=['vbio', 'vbio.servers'],
+    packages=['vbio', 'vbio.handlers'],
     install_requires=['requests'],
     extras_require={
         'webhook': ['Flask'],
