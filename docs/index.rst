@@ -25,12 +25,11 @@ Hello world!
    # Например vk_api.
    import vk_requests
 
-   from vbio import VkBot
-   from vbio.servers import LongPoolClient
+   from vbio import VkBot, LongPollClient
 
    api = vk_requests.create_api(service_token='<токен группы>')
    bot = VkBot(api)
-   server = LongPoolClient(bot)
+   handler = LongPollClient(bot)
 
 
    @bot.message_handler()
@@ -39,7 +38,7 @@ Hello world!
 
 
    if __name__ == '__main__':
-       server.run()
+       handler.run()
 
 
 .. toctree::

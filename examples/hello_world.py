@@ -4,8 +4,7 @@
 # например vk_api.
 import vk_requests
 
-from vbio import VkBot
-from vbio.servers import LongPoolClient
+from vbio import VkBot, LongPollClient
 
 # Получаем обертку на API
 api = vk_requests.create_api(service_token='<токен группы>')
@@ -13,7 +12,7 @@ api = vk_requests.create_api(service_token='<токен группы>')
 bot = VkBot(api=api)
 
 # LongPool клиент
-server = LongPoolClient(bot)
+handler = LongPollClient(bot)
 
 
 # Задаем функцию которая будет получать сообщения.
@@ -28,4 +27,4 @@ def hello_world(m):
 
 if __name__ == '__main__':
     # Запускаем сервер
-    server.run()
+    handler.run()

@@ -26,8 +26,8 @@ class VkBot:
         self.ignore_errors = ignore_errors
         self.api = api
 
-        self.callback_message_handlers = []
-        self.callback_request_handlers = []
+        self.message_handlers = []
+        self.request_handlers = []
         self.message_register_next_step = {}
 
         self.logger = init_logger()
@@ -70,7 +70,7 @@ class VkBot:
             self.message_register_next_step.pop(msg['from_id'])
 
         else:
-            for handler in self.callback_message_handlers:
+            for handler in self.message_handlers:
                 for fil in handler['filters']:
                     if handler['filters'][fil] is None:
                         pass
@@ -89,7 +89,7 @@ class VkBot:
         """
 
         req = VkEvent(req)
-        for handler in self.callback_request_handlers:
+        for handler in self.request_handlers:
             if handler['filters']['func'] is None:
                 pass
 
@@ -108,7 +108,7 @@ class VkBot:
                                       условиям фильтров.
         :type handler_dict: dict
         """
-        self.callback_message_handlers.append(handler_dict)
+        self.message_handlers.append(handler_dict)
 
     def add_event_handler(self, handler_dict: dict):
         """
@@ -119,7 +119,7 @@ class VkBot:
                                       условиям фильтров.
         :type handler_dict: dict
         """
-        self.callback_request_handlers.append(handler_dict)
+        self.request_handlers.append(handler_dict)
 
     def message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
                         text: str = None, command: str = None, payload: dict = None):

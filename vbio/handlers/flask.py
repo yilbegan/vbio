@@ -5,12 +5,12 @@ import logging
 
 from flask import Flask, request, abort
 from vbio.bot import VkBot
-from vbio.types import VkBotServer
+from vbio.types import VkBotHandler
 
 __all__ = ('FlaskServer',)
 
 
-class FlaskServer(VkBotServer):
+class FlaskServer(VkBotHandler):
 
     def __init__(self, bot: VkBot, secret: str, confirmation: str, app: Flask = None):
 

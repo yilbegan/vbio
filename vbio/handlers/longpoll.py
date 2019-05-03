@@ -4,12 +4,12 @@ import requests
 import sys
 
 from vbio.bot import VkBot
-from vbio.types import VkBotServer
+from vbio.types import VkBotHandler
 
-__all__ = ('LongPoolClient',)
+__all__ = ('LongPollClient',)
 
 
-class LongPoolClient(VkBotServer):
+class LongPollClient(VkBotHandler):
 
     def __init__(self, bot: VkBot, wait: int = 25):
         self.group_id = bot.api.groups.getById()[0]['id']

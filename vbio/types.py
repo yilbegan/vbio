@@ -38,7 +38,7 @@ class JsonSerializable:
         raise NotImplementedError()
 
 
-class VkBotServer:
+class VkBotHandler:
     def run(self, *args, **kwargs):
         raise NotImplementedError()
 

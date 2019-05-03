@@ -2,13 +2,12 @@
 
 import vk_requests
 
-from vbio import VkBot
-from vbio.servers import FlaskServer
+from vbio import VkBot, FlaskServer
 
 api = vk_requests.create_api(service_token='<токен группы>')
 bot = VkBot(api=api)
-server = FlaskServer(bot, secret='<секретный ключ>',
-                     confirmation='<строка, которую должен вернуть сервер>')
+handler = FlaskServer(bot, secret='<секретный ключ>',
+                      confirmation='<строка, которую должен вернуть сервер>')
 
 
 @bot.message_handler()
@@ -17,4 +16,4 @@ def hello_world(m):
 
 
 if __name__ == '__main__':
-    server.run(port=80)
+    handler.run(port=80)

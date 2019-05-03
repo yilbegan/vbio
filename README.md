@@ -8,12 +8,11 @@
 # Например vk_api.
 import vk_requests
 
-from vbio import VkBot
-from vbio.servers import LongPoolClient
+from vbio import VkBot, LongPollClient
     
 api = vk_requests.create_api(service_token='<токен группы>')
 bot = VkBot(api)
-server = LongPoolClient(bot)
+handler = LongPollClient(bot)
     
     
 @bot.message_handler()
@@ -22,7 +21,7 @@ def hello_world(m):
     
     
 if __name__ == '__main__':
-    server.run()
+    handler.run()
 ```
 
 ## Установка
@@ -33,7 +32,7 @@ if __name__ == '__main__':
 ```
 # pip3 install vbio[color]
 ```
-С поддержкой webhook:
+С поддержкой webhook'ов:
 ```
 # pip3 install vbio[webhook]
 ```
