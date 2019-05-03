@@ -11,7 +11,7 @@ api = vk_requests.create_api(service_token='<токен группы>')
 
 bot = VkBot(api=api)
 
-# LongPool клиент
+# LongPoll клиент
 handler = LongPollClient(bot)
 
 

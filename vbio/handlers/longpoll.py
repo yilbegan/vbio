@@ -29,7 +29,7 @@ class LongPollClient(VkBotHandler):
             'ts': pool['ts'],
         }
 
-        self.bot.logger.info('Pooling started!')
+        self.bot.logger.info('Polling started!')
 
         while True:
             event = self.session.get(
