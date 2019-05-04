@@ -10,10 +10,16 @@ handler = LongPollClient(bot)
 
 
 # Будет вызываться только если текст сообщения подходит
-# под регулярное выражение
-@bot.message_handler(regexp=r'[0-9]+')
+# под регулярное выражение.
+# В поле m.regex_ будет сохранён groupdict.
+@bot.message_handler(regexp=r'сумма (?P<first>[0-9]+) (?P<second>[0-9]+)')
 def regexp(m):
-    m.answer(message='Вы ввели число!')
+    # USR: сумма 2 2
+    # BOT: 2 + 2 = 4
+    m.answer(message='{} + {} = {}'.format(
+        m.regexp_['first'], m.regexp_['second'],
+        int(m.regexp_['first']) + int(m.regexp_['second'])
+    ))
 
 
 # Будет вызываться если сообщения содержит все
@@ -24,15 +30,9 @@ def content_type(m):
 
 
 # Будет вызываться если функция func вернет True
-@bot.message_handler(func=lambda m: m.text == m.text[::-1])
+@bot.message_handler(func=lambda m: m.text.lower() == m.text.lower()[::-1])
 def func(m):
     m.answer(message='Вы ввели палиндром!')
-
-
-# Вызывается, если текст сообщения равен text
-@bot.message_handler(text='помощь')
-def text(m):
-    m.answer(message='Вы отправили текст "помощь"!')
 
 
 # Вызывается, если поле "command" из m.payload сообщения равна
@@ -42,10 +42,35 @@ def command(m):
     m.answer(message='Вы нажали кнопку "Начать"!')
 
 
-# Вызывается, если m.payload равно payload
-@bot.message_handler(payload={'123': 456})
+# Если True, то вызывается только если сообщение отправлено в конференции,
+# иначе только если из личных сообщений
+@bot.message_handler(from_chat=True)
 def payload(m):
-    m.answer(message='Вы отправили сообщение с payload {"123": 456}')
+    m.answer(message='Вы отправили это сообщение из чата #%i' % (m.peer_id,))
+
+
+# Кстати, можно комбинировать несколько фильтров.
+# Например эта команда будет работать только в ЛС бота.
+@bot.message_handler(regexp=r'умнож(ь|ить) (?P<first>[0-9]+) (?P<second>[0-9]+)', from_chat=False)
+def mul(m):
+    m.answer(
+        message='{first} * {second} = {}'.format(
+            int(m.regexp_['first']) * int(m.regexp_['second']),
+            **m.regexp_
+        )
+    )
+
+
+# Будет вызываться если в чат вошёл новый пользователь.
+def greet(m):
+    m.answer(
+        message='В чате теперь новый пользователь!'
+    )
+
+
+# Можно задавать и так
+bot.message_handler(action='chat_invite_user')(greet)
+bot.message_handler(action='chat_invite_user_by_link')(greet)
 
 
 if __name__ == '__main__':

@@ -45,14 +45,16 @@ class VkBot:
             return True
 
         test_cases = {
-            'regexp': lambda m: re.fullmatch(value, msg.text),
+            # TODO: Не самый лучший код, исправить
+            'regexp': lambda m: m.__setattr__('regexp_', re.fullmatch(value, m.text).groupdict()) or True
+            if re.fullmatch(value, m.text) else False,
+            'action': lambda m: m.get('action', {}).get('type') == value,
             'func': lambda m: value(m),
-            'text': lambda m: m.text == value,
+            'from_chat': lambda m: m.from_chat is value,
+            'command': lambda m: m.command == value,
             'content_type': lambda m: set(value).issubset({
                 ct for ct in CONTENT_TYPES if CONTENT_TYPES[ct](m)
-            }),
-            'payload': lambda m: m.payload == value,
-            'command': lambda m: m.command == value
+            })
         }
 
         return test_cases.get(f, lambda m: False)(msg)
@@ -122,17 +124,33 @@ class VkBot:
         self.request_handlers.append(handler_dict)
 
     def message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
-                        text: str = None, command: str = None, payload: dict = None):
+                        command: str = None, from_chat: bool = None, action: str = None):
         """ Подписка Callable на события сообщений
 
         Фильтры:
         :param regexp: Callable будет вызываться, если текст сообщения
             удовлетворяет регулярному выражению. Например,
-            @bot.callback_message_handler(regexp=r'\d+')
+            @bot.message_handler(regexp=r'\\d+')
             ...
 
             будет вызываться если текст сообщения является числом.
+            Кроме того, в поле m.regex_ будет сохранён groupdict.
         :type regexp: str
+
+        :param from_chat: Если True, то Callable будет вызываться только если сообщение
+            отправлено в чате, если False, то только если сообщение отправдено в
+            личные сообщения бота
+        :type from_chat: bool
+
+        :param action: Callable будет вызываться, если action сообщения равен данному.
+            Подробнее: https://vk.com/dev/objects/message
+            Например,
+            @bot.message_handler(action='chat_invite_user')
+            ...
+
+            будет вызываться если в чат приглашен новый пользователь.
+
+        :type action: str
 
         :param content_type: Callable будет вызываться, если сообщение
             содержит все типы вложений из переданного списка.
@@ -144,7 +162,7 @@ class VkBot:
                 Также поддерживаются прочие типы медиавложений,
                 см. https://vk.com/dev/objects/attachments_m
             Например,
-            @bot.callback_message_handler(content_type=['audio', 'text'])
+            @bot.message_handler(content_type=['audio', 'text'])
             ...
 
             будет вызываться если сообщение содержит текст И аудиозапись.
@@ -153,45 +171,27 @@ class VkBot:
         :param func: Callable будет вызываться, если переданный Callable
             вернет True. Сигнатура: foo(m: VkMessage) -> bool.
             Например,
-            @bot.callback_message_handler(func=lambda m: m.from_id == 1)
+            @bot.message_handler(func=lambda m: m.from_id == 1)
             ...
 
             будет вызываться если сообщение отправил vk.com/id1
         :type func: Callable
 
-        :param text: Callable будет вызываться, если текст сообщения равен
-            переданному.
-            Например,
-            @bot.callback_message_handler(text='hello')
-            ...
-
-            будет вызываться если текст сообщения равен 'hello'
-        :type text: str
-
         :param command: Callable будет вызываться, если поле 'command' из
             полезной нагрузки сообщения равен переданному.
             Например,
-            @bot.callback_message_handler(command='start')
+            @bot.message_handler(command='start')
             ...
 
             будет вызываться если пользователь нажал кнопку Начать.
         :type command: str
 
-        :param payload: Callable будет вызываться, если полезная нагрузка
-            сообщения равна данной.
-            Например,
-            @bot.callback_message_handler(payload={'command': 'start'})
-            ...
-
-            будет вызываться аналогично с предыдущим примером.
-        :type payload: dict
-
         :return: Декоратор
         """
         def decorator(handler):
             handler_dict = self._build_handler_dict(handler, regexp=regexp, content_type=content_type,
-                                                    func=func, text=text, command=command,
-                                                    payload=payload)
+                                                    func=func, command=command, action=action,
+                                                    from_chat=from_chat)
             self.add_message_handler(handler_dict)
 
         return decorator
