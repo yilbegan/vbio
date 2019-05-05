@@ -28,6 +28,7 @@ class VkBot:
 
         self.message_handlers = []
         self.request_handlers = []
+        self.middleware = []
         self.message_register_next_step = {}
 
         self.logger = init_logger()
@@ -62,6 +63,7 @@ class VkBot:
             'func': lambda m: value(m),
             'from_chat': lambda m: m.from_chat is value,
             'command': lambda m: m.command == value,
+            'tags': lambda m: value.issubset(m.context.tags),
             'content_type': lambda m: set(value).issubset({
                 ct for ct in CONTENT_TYPES if CONTENT_TYPES[ct](m)
             })
@@ -77,6 +79,11 @@ class VkBot:
         """
 
         msg = VkMessage(msg, self)
+        for middleware in self.middleware:
+            middleware(msg, msg.context)
+            if msg.context.exit:
+                return
+
         if msg.from_id in self.message_register_next_step:
             self.message_register_next_step[msg['from_id']](msg)
             self.message_register_next_step.pop(msg['from_id'])
@@ -133,8 +140,15 @@ class VkBot:
         """
         self.request_handlers.append(handler_dict)
 
-    def message_handler(self, regexp: str = None, content_type: list = None, func: Callable = None,
-                        command: str = None, from_chat: bool = None, action: str = None):
+    def register_middleware(self):
+        def decorator(handler):
+            self.middleware.append(handler)
+
+        return decorator
+
+    def message_handler(self, regexp=None, content_type: list = None, func: Callable = None,
+                        command: str = None, from_chat: bool = None, action: str = None,
+                        tags: set = None):
         """ Подписка Callable на события сообщений
 
         Фильтры:
@@ -145,7 +159,6 @@ class VkBot:
 
             будет вызываться если текст сообщения является числом.
             Кроме того, в поле m.regex_ будет сохранён groupdict.
-        :type regexp: str
 
         :param from_chat: Если True, то Callable будет вызываться только если сообщение
             отправлено в чате, если False, то только если сообщение отправдено в
@@ -196,17 +209,21 @@ class VkBot:
             будет вызываться если пользователь нажал кнопку Начать.
         :type command: str
 
+        :param tags
+        :type tags: set
+
         :return: Декоратор
         """
         def decorator(handler):
             handler_dict = self._build_handler_dict(handler, regexp=regexp, content_type=content_type,
                                                     func=func, command=command, action=action,
-                                                    from_chat=from_chat)
+                                                    from_chat=from_chat, tags=tags)
             self.add_message_handler(handler_dict)
+            return handler
 
         return decorator
 
-    def callback_event_handler(self, func: Callable[[VkEvent], None] = None):
+    def event_handler(self, func: Callable[[VkEvent], None] = None):
         """ Декортатор
 
         :param func: Callable будет вызываться, если переданный Callable
@@ -218,6 +235,7 @@ class VkBot:
         def decorator(handler):
             handler_dict = self._build_handler_dict(handler, func=func)
             self.add_event_handler(handler_dict)
+            return handler
 
         return decorator
 

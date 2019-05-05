@@ -65,15 +65,12 @@ def mul(m):
 
 
 # Будет вызываться если в чат вошёл новый пользователь.
+@bot.message_handler(action='chat_invite_user')
+@bot.message_handler(action='chat_invite_user_by_link')
 def greet(m):
     m.answer(
         message='В чате теперь новый пользователь!'
     )
-
-
-# Можно задавать и так
-bot.message_handler(action='chat_invite_user')(greet)
-bot.message_handler(action='chat_invite_user_by_link')(greet)
 
 
 if __name__ == '__main__':

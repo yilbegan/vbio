@@ -155,6 +155,7 @@ class VkMessage:
                 )
             self.data['attachments'] = attachments
         self.bot = bot
+        self.context = MiddlewareContext()
 
     def __getattr__(self, item):
         return self.data[item]
@@ -240,6 +241,35 @@ class VkAttachment:
             out.write(data)
 
         return data
+
+
+class MiddlewareContext:
+
+    __slots__ = ('tags', 'data', 'exit', '__dict__')
+
+    def __init__(self):
+        self.tags = set()
+        self.data = {}
+        self.exit = False
+
+    def tag(self, tag: str):
+        self.tags.add(tag)
+
+    def stop(self):
+        self.exit = True
+
+    def __setattr__(self, key, value):
+        if key in self.__slots__:
+            self.__dict__[key] = value
+        else:
+            self.data[key] = value
+
+    def __getattr__(self, item):
+        if item in self.__slots__:
+            return self.__dict__[item]
+        if item in self.data:
+            return self.data[item]
+        return None
 
 
 class VkEvent:
