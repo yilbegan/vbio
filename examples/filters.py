@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import vk_requests
+import re
 
 from vbio import VkBot, LongPollClient
 
@@ -10,9 +11,10 @@ handler = LongPollClient(bot)
 
 
 # Будет вызываться только если текст сообщения подходит
-# под регулярное выражение.
+# под регулярное выражение. Также можно использовать строку, если вам
+# не нужно использовать флаги.
 # В поле m.regex_ будет сохранён groupdict.
-@bot.message_handler(regexp=r'сумма (?P<first>[0-9]+) (?P<second>[0-9]+)')
+@bot.message_handler(regexp=re.compile('сумма (?P<first>[0-9]+) (?P<second>[0-9]+)', re.IGNORECASE))
 def regexp(m):
     # USR: сумма 2 2
     # BOT: 2 + 2 = 4
@@ -51,6 +53,7 @@ def payload(m):
 
 # Кстати, можно комбинировать несколько фильтров.
 # Например эта команда будет работать только в ЛС бота.
+# А ещё она не будет регистронезависимой!
 @bot.message_handler(regexp=r'умнож(ь|ить) (?P<first>[0-9]+) (?P<second>[0-9]+)', from_chat=False)
 def mul(m):
     m.answer(

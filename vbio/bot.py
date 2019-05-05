@@ -45,7 +45,11 @@ class VkBot:
             return True
 
         def regexp(m):
-            match = re.fullmatch(value, m.text)
+            if not isinstance(value, str):
+                match = value.fullmatch(m.text)
+            else:
+                match = re.fullmatch(value, m.text)
+
             if match is None:
                 return False
 
