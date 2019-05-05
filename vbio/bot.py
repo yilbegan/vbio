@@ -44,10 +44,16 @@ class VkBot:
         if value is None:
             return True
 
+        def regexp(m):
+            match = re.fullmatch(value, m.text)
+            if match is None:
+                return False
+
+            m.regexp_ = match.groupdict()
+            return True
+
         test_cases = {
-            # TODO: Не самый лучший код, исправить
-            'regexp': lambda m: m.__setattr__('regexp_', re.fullmatch(value, m.text).groupdict()) or True
-            if re.fullmatch(value, m.text) else False,
+            'regexp': regexp,
             'action': lambda m: m.get('action', {}).get('type') == value,
             'func': lambda m: value(m),
             'from_chat': lambda m: m.from_chat is value,
